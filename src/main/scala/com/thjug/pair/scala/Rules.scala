@@ -15,10 +15,14 @@
 package com.thjug.pair.scala
 
 /**
- * Created by nuboat on 8/22/14.
+ * Created by nuboat on 8/23/14.
  */
-class Echo {
-  def getMessage(msg:String): String = {
-    return s"{{{ $msg }}}"
+class Rules {
+  def nextState(s: String, i: Int):String = {
+    return s match {
+      case "L" => if(i >= 2 && i <= 3) "L" else "D"
+      case "D" => if(i == 3) "L" else "D"
+    }
   }
+
 }
