@@ -1,6 +1,6 @@
-Scala Pair
+Scala Of Life
 ===================
-Example Code of Scala Pairing
+Game of Life based on Scala Langauge.
 
 
 Software Library
@@ -9,12 +9,12 @@ Software Library
  -  Intelli J 13.1
  -  JDK 1.8u20
 
+
 Build
 -----
 
 
-
-Example
+Class
 -----
- 1. Main class
- -  Echo and EchoTest
+ 1. Main: Standard main class)
+ -  Rules and RulesTest: 4 rules of Game Of Life
