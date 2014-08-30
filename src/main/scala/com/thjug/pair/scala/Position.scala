@@ -15,10 +15,10 @@
 package com.thjug.pair.scala
 
 /**
- * Created by nuboat on 8/20/14.
+ * Description
+ *  case class (auto generate [hashcode, toString, equals, getter, setter])
+ *
+ * Created by nuboat on 8/30/14.
  */
-object Main {
-  def main(args:Array[String]) {
-    println("Game Of Life Start.")
-  }
+case class Position(x:Int, y:Int) {
 }
