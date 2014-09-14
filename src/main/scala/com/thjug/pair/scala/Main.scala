@@ -20,5 +20,13 @@ package com.thjug.pair.scala
 object Main {
   def main(args:Array[String]) {
     println("Game Of Life Start.")
+
+    val board = new Board(9,9)
+    board.addLifePoint(2,2)
+
+    do {
+      println(board.toString())
+      Thread.sleep(1000)
+    } while (true)
   }
 }
