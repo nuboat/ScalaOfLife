@@ -19,6 +19,6 @@ package com.thjug.pair.scala
  */
 object Main {
   def main(args:Array[String]) {
-    println("Game Of Life Start.")
+    println("Scala Of Life Start.")
   }
 }
