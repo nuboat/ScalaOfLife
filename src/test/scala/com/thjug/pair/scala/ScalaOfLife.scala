@@ -14,19 +14,27 @@
  */
 package com.thjug.pair.scala
 
+import org.scalatest.{Matchers, FlatSpec}
+
 /**
- * Created by nuboat on 8/20/14.
+ * Created by nuboat on 9/14/14.
  */
-object Main {
-  def main(args:Array[String]) {
-    println("Game Of Life Start.")
-
-    val board = new Board(9,9)
+class ScalaOfLife extends FlatSpec with Matchers {
+  "Board update from pattern xxx" should "change to expected" in {
+    val board = new Board(x=5, y=5)
+    board.addLifePoint(1,2)
     board.addLifePoint(2,2)
+    board.addLifePoint(3,2)
 
-    do {
-      println(board.toString())
-      Thread.sleep(1000)
-    } while (true)
+    board.update()
+
+    val expected =
+      ".....\n" +
+      "..X..\n" +
+      "..X..\n" +
+      "..X..\n" +
+      ".....\n"
+
+    assert( board.toString() == expected )
   }
 }
