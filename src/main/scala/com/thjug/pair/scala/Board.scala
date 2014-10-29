@@ -14,27 +14,50 @@
  */
 package com.thjug.pair.scala
 
-import scala.collection.mutable.ListBuffer
+import scala.collection.mutable.HashSet
 
 /**
  * Created by nuboat on 8/30/14.
  */
 class Board(val x:Int, val y:Int) {
-  val lifePoints = new ListBuffer[Position]
+
+  val lifePoints = new HashSet[Position]
 
   def addLifePoint(x: Int, y: Int):Unit = {
-    lifePoints.append(new Position(x,y))
+    lifePoints += Position(x,y)
+  }
+
+  def update():Board = {
+    for(i <- 0 until y) {
+      for(j <- 0 until x) {
+
+      }
+    }
+
+    return null
+  }
+
+  def getLifeNeighbours(x:Int, y:Int):Int = {
+    val offset:Array[Position] = Array(new Position(x-1,y-1), new Position(x,y-1), new Position(x+1,y-1),
+                                       new Position(x-1,  y),                      new Position(x+1,y),
+                                       new Position(x-1,y+1), new Position(x,y+1), new Position(x+1,y+1))
+
+    var neighbours:Int = 0
+    for(position <- offset) {
+      neighbours = neighbours + (if (lifePoints.contains(position)) 1 else 0)
+    }
+    return neighbours
   }
 
   override def toString():String = {
     val board = new StringBuilder
-    val lifePointSet:Set[Position] = lifePoints.toSet
 
     for(i <- 0 until y) {
       for( j <- 0 until x) {
-        val hasLife = lifePointSet.contains(new Position(j,i))
-
-        board.append( if(hasLife) "X" else "." )
+        lifePoints.contains(Position(j,i)) match {
+          case true => board.append("X")
+          case false => board.append(".")
+        }
       }
       board.append("\n")
     }

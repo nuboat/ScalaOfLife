@@ -41,4 +41,51 @@ class BoardTest extends FlatSpec with Matchers {
 
     assert( board.toString() == expected )
   }
+
+  "getLifeNeighbours 2,2" should "return 0" in {
+    val board = new Board(x=5, y=5)
+    board.addLifePoint(2,2)
+
+    assert(board.getLifeNeighbours(2, 2) == 0)
+  }
+  "getLifeNeighbours 2,2" should "return 8" in {
+    val board = new Board(x=5, y=5)
+    board.addLifePoint(1,1)
+    board.addLifePoint(2,1)
+    board.addLifePoint(3,1)
+    board.addLifePoint(1,2)
+    board.addLifePoint(2,2)
+    board.addLifePoint(3,2)
+    board.addLifePoint(1,3)
+    board.addLifePoint(2,3)
+    board.addLifePoint(3,3)
+
+    assert(board.getLifeNeighbours(2, 2) == 8)
+  }
+
+  "getLifeNeighbours 1,2" should "return 1" in {
+    val board = new Board(x=5, y=5)
+    board.addLifePoint(1,2)
+    board.addLifePoint(2,2)
+    board.addLifePoint(3,2)
+
+    assert(board.getLifeNeighbours(1, 2) == 1)
+  }
+  "getLifeNeighbours 2,2" should "return 2" in {
+    val board = new Board(x=5, y=5)
+    board.addLifePoint(1,2)
+    board.addLifePoint(2,2)
+    board.addLifePoint(3,2)
+
+    assert(board.getLifeNeighbours(2, 2) == 2)
+  }
+  "getLifeNeighbours 3,2" should "return 1" in {
+    val board = new Board(x=5, y=5)
+    board.addLifePoint(1,2)
+    board.addLifePoint(2,2)
+    board.addLifePoint(3,2)
+
+    assert(board.getLifeNeighbours(3, 2) == 1)
+  }
+
 }
