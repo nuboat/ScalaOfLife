@@ -23,7 +23,7 @@ class Board(val x:Int, val y:Int) {
   val lifePoints = new ListBuffer[Position]
 
   def addLifePoint(x: Int, y: Int):Unit = {
-    lifePoints.append(new Position(x,y))
+    lifePoints += Position(x,y)
   }
 
   override def toString():String = {
@@ -32,9 +32,10 @@ class Board(val x:Int, val y:Int) {
 
     for(i <- 0 until y) {
       for( j <- 0 until x) {
-        val hasLife = lifePointSet.contains(new Position(j,i))
-
-        board.append( if(hasLife) "X" else "." )
+        lifePointSet.contains(Position(j,i)) match {
+          case true => board.append("X")
+          case false => board.append(".")
+        }
       }
       board.append("\n")
     }
