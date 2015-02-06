@@ -14,8 +14,7 @@
  */
 package com.thjug.pair.scala
 
-import scala.collection.immutable.HashSet
-import scala.collection.mutable
+import scala.collection.mutable.{HashSet => HashSetBuffer}
 import scala.util.Random
 
 /**
@@ -32,7 +31,7 @@ object BoardBuilder {
 case class BoardBuilder(val x: Int, val y: Int) {
 
   private val r = Random
-  private val lifePoints = mutable.HashSet[Position]()
+  private val lifePoints = HashSetBuffer[Position]()
 
   def random: BoardBuilder = {
     (for {x <- (0 to x); y <- (0 to y)} yield (x, y)).filter(t => r.nextInt(10) % 2 == 0).par.foreach(t => addLifePoint(t._1, t._2))
@@ -93,7 +92,7 @@ case class Board(val x: Int, val y: Int, val lifePoints: Set[Position]) {
   def getLifeNeighbours(x: Int, y: Int): Int = {
     val offset: Array[Position] = Array(
       new Position(x - 1, y - 1), new Position(x, y - 1), new Position(x + 1, y - 1),
-      new Position(x - 1, y),                             new Position(x + 1, y),
+      new Position(x - 1, y), new Position(x + 1, y),
       new Position(x - 1, y + 1), new Position(x, y + 1), new Position(x + 1, y + 1))
 
     return offset.map(p => lifePoints.contains(p)).filter(b => b == true).size
