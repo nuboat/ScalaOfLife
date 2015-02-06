@@ -18,6 +18,7 @@ package com.thjug.pair.scala
  * Created by nuboat on 8/23/14.
  */
 class Rules {
+
   def nextState(s: String, i: Int):String = {
     return s match {
       case "L" => if(i >= 2 && i <= 3) "L" else "D"

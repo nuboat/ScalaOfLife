@@ -22,19 +22,19 @@ import org.scalatest.{Matchers, FlatSpec}
 class ScalaOfLife extends FlatSpec with Matchers {
   "Board update from pattern xxx" should "change to expected" in {
     val board = new Board(x=5, y=5)
-    board.addLifePoint(1,2)
+    board.addLifePoint(2,1)
     board.addLifePoint(2,2)
-    board.addLifePoint(3,2)
+    board.addLifePoint(2,3)
 
     board.update()
 
     val expected =
-      ".....\n" +
-      "..X..\n" +
-      "..X..\n" +
-      "..X..\n" +
-      ".....\n"
+      "-----\n" +
+      "--X--\n" +
+      "--X--\n" +
+      "--X--\n" +
+      "-----\n"
 
-    assert( board.toString() == expected )
+    board.render() should be(expected)
   }
 }

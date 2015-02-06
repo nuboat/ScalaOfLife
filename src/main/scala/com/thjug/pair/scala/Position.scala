@@ -20,5 +20,4 @@ package com.thjug.pair.scala
  *
  * Created by nuboat on 8/30/14.
  */
-case class Position(val x:Int, val y:Int) {
-}
+case class Position(val x:Int, val y:Int) extends Serializable

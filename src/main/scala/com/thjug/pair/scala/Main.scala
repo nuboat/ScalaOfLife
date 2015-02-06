@@ -14,19 +14,26 @@
  */
 package com.thjug.pair.scala
 
+import scala.util.Random
+
 /**
  * Created by nuboat on 8/20/14.
  */
 object Main {
-  def main(args:Array[String]) {
-    println("Game Of Life Start.")
 
-    val board = new Board(9,9)
-    board.addLifePoint(2,2)
+  private val x = 60
+  private val y = 20
+
+  def main(args: Array[String]) {
+    val builder = BoardBuilder(x, y)
+    var board = builder.random.build()
 
     do {
-      println(board.toString())
+      println(board.render())
+      board = board.next()
       Thread.sleep(1000)
     } while (true)
+
   }
+
 }

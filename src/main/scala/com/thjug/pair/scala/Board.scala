@@ -14,55 +14,91 @@
  */
 package com.thjug.pair.scala
 
-import scala.collection.mutable.HashSet
+import scala.collection.immutable.HashSet
+import scala.collection.mutable
+import scala.util.Random
 
 /**
  * Created by nuboat on 8/30/14.
  */
-class Board(val x:Int, val y:Int) {
+object BoardBuilder {
 
-  val lifePoints = new HashSet[Position]
-
-  def addLifePoint(x: Int, y: Int):Unit = {
-    lifePoints += Position(x,y)
+  def create(x: Int, y: Int): BoardBuilder = {
+    return BoardBuilder(x, y)
   }
 
-  def update():Board = {
-    for(i <- 0 until y) {
-      for(j <- 0 until x) {
+}
 
-      }
-    }
+case class BoardBuilder(val x: Int, val y: Int) {
 
-    return null
-  }
+  private val r = Random
+  private val lifePoints = mutable.HashSet[Position]()
 
-  def getLifeNeighbours(x:Int, y:Int):Int = {
-    val offset:Array[Position] = Array(new Position(x-1,y-1), new Position(x,y-1), new Position(x+1,y-1),
-                                       new Position(x-1,  y),                      new Position(x+1,y),
-                                       new Position(x-1,y+1), new Position(x,y+1), new Position(x+1,y+1))
-
-    var neighbours:Int = 0
-    for(position <- offset) {
-      neighbours = neighbours + (if (lifePoints.contains(position)) 1 else 0)
-    }
-    return neighbours
-  }
-
-  override def toString():String = {
-    val board = new StringBuilder
-
-    for(i <- 0 until y) {
-      for( j <- 0 until x) {
-        lifePoints.contains(Position(j,i)) match {
-          case true => board.append("X")
-          case false => board.append(".")
+  def random: BoardBuilder = {
+    for (i <- 0 until y) {
+      for (j <- 0 until x) {
+        if (r.nextInt(10) % 2 == 0) {
+          addLifePoint(j, i)
         }
       }
-      board.append("\n")
+    }
+    return this
+  }
+
+  def addLifePoint(x: Int, y: Int): BoardBuilder = {
+    lifePoints += Position(x, y)
+    return this
+  }
+
+  def build(): Board = {
+    return Board(x, y, lifePoints.toSet)
+  }
+
+}
+
+case class Board(val x: Int, val y: Int, val lifePoints: Set[Position]) {
+
+  private val rules:Rules = new Rules
+
+  def next(): Board = {
+    val builder = BoardBuilder(this.x, this.y)
+
+    for (i <- 0 until y) {
+      for (j <- 0 until x) {
+        val state = if (lifePoints.contains(Position(j, i))) "L" else "D"
+        val next = rules.nextState(state, getLifeNeighbours(j, i))
+        if (next == "L") {
+          builder.addLifePoint(j, i)
+        }
+      }
     }
 
-    return board.toString
+    return builder.build()
+  }
+
+  def render(): String = {
+    val display = new StringBuilder
+
+    for (i <- 0 until y) {
+      for (j <- 0 until x) {
+        lifePoints.contains(Position(j, i)) match {
+          case true => display.append("X")
+          case false => display.append(" ")
+        }
+      }
+      display.append("\n")
+    }
+
+    return display.toString
+  }
+
+  private def getLifeNeighbours(x: Int, y: Int): Int = {
+    val offset: Array[Position] = Array(
+      new Position(x - 1, y - 1), new Position(x, y - 1), new Position(x + 1, y - 1),
+      new Position(x - 1, y),                             new Position(x + 1, y),
+      new Position(x - 1, y + 1), new Position(x, y + 1), new Position(x + 1, y + 1))
+
+    return offset.map( p => if (lifePoints.contains(p)) 1 else 0 ).foldLeft(0)(_ + _)
   }
 
 }
