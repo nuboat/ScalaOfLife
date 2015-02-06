@@ -19,10 +19,10 @@ package com.thjug.pair.scala
  */
 class Rules {
 
-  def nextState(s: String, i: Int):String = {
-    return s match {
-      case "L" => if(i >= 2 && i <= 3) "L" else "D"
-      case "D" => if(i == 3) "L" else "D"
+  def nextState(isLife: Boolean, i: Int):Boolean = {
+    return isLife match {
+      case true => i >= 2 && i <= 3
+      case false => i == 3
     }
   }
 

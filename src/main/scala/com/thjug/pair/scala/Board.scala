@@ -34,7 +34,10 @@ case class BoardBuilder(val x: Int, val y: Int) {
   private val lifePoints = HashSetBuffer[Poi]()
 
   def random: BoardBuilder = {
-    (for {x <- (0 to x); y <- (0 to y)} yield (x, y)).filter(t => r.nextInt(10) % 2 == 0).par.foreach(t => addLifePoint(t._1, t._2))
+    (for {x <- (0 to x); y <- (0 to y)} yield (x, y))
+      .filter(t => r.nextInt(10) % 2 == 0)
+      .par.foreach(t => addLifePoint(t._1, t._2))
+
     return this
   }
 
@@ -52,6 +55,7 @@ case class BoardBuilder(val x: Int, val y: Int) {
 case class Board(val x: Int, val y: Int, val lifePoints: Set[Poi]) {
 
   private val rules: Rules = new Rules
+  private val obj = Map(true -> "X", false -> " ")
 
   implicit class Crossable[X](xs: Traversable[X]) {
     def cross[Y](ys: Traversable[Y]) = for {x <- xs; y <- ys} yield (x, y)
@@ -60,15 +64,9 @@ case class Board(val x: Int, val y: Int, val lifePoints: Set[Poi]) {
   def next(): Board = {
     val builder = BoardBuilder(this.x, this.y)
 
-    for (i <- 0 until y) {
-      for (j <- 0 until x) {
-        val state = if (lifePoints.contains(Poi(j, i))) "L" else "D"
-        val next = rules.nextState(state, getLifeNeighbours(j, i))
-        if (next == "L") {
-          builder.addLifePoint(j, i)
-        }
-      }
-    }
+    ((0 to x) cross (0 to y))
+      .filter(t => rules.nextState(lifePoints.contains(Poi(t._1, t._2)), getLifeNeighbours(t._1, t._2)))
+      .par.foreach(t => builder.addLifePoint(t._1, t._2))
 
     return builder.build()
   }
@@ -78,10 +76,7 @@ case class Board(val x: Int, val y: Int, val lifePoints: Set[Poi]) {
 
     for (i <- 0 until y) {
       for (j <- 0 until x) {
-        lifePoints.contains(Poi(j, i)) match {
-          case true => display.append("X")
-          case false => display.append(" ")
-        }
+        display.append(obj(lifePoints.contains(Poi(j, i))))
       }
       display.append("\n")
     }
@@ -92,7 +87,7 @@ case class Board(val x: Int, val y: Int, val lifePoints: Set[Poi]) {
   def getLifeNeighbours(x: Int, y: Int): Int = {
     val offset: Array[Poi] = Array(
       new Poi(x - 1, y - 1), new Poi(x, y - 1), new Poi(x + 1, y - 1),
-      new Poi(x - 1, y),                        new Poi(x + 1, y),
+      new Poi(x - 1, y), new Poi(x + 1, y),
       new Poi(x - 1, y + 1), new Poi(x, y + 1), new Poi(x + 1, y + 1))
 
     return offset.map(p => lifePoints.contains(p)).filter(b => b == true).size
