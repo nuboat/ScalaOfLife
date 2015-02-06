@@ -35,13 +35,7 @@ case class BoardBuilder(val x: Int, val y: Int) {
   private val lifePoints = mutable.HashSet[Position]()
 
   def random: BoardBuilder = {
-    for (i <- 0 until y) {
-      for (j <- 0 until x) {
-        if (r.nextInt(10) % 2 == 0) {
-          addLifePoint(j, i)
-        }
-      }
-    }
+    (for {x <- (0 to x); y <- (0 to y)} yield (x, y)).filter(t => r.nextInt(10) % 2 == 0).par.foreach(t => addLifePoint(t._1, t._2))
     return this
   }
 
@@ -58,7 +52,11 @@ case class BoardBuilder(val x: Int, val y: Int) {
 
 case class Board(val x: Int, val y: Int, val lifePoints: Set[Position]) {
 
-  private val rules:Rules = new Rules
+  private val rules: Rules = new Rules
+
+  implicit class Crossable[X](xs: Traversable[X]) {
+    def cross[Y](ys: Traversable[Y]) = for {x <- xs; y <- ys} yield (x, y)
+  }
 
   def next(): Board = {
     val builder = BoardBuilder(this.x, this.y)
@@ -92,13 +90,13 @@ case class Board(val x: Int, val y: Int, val lifePoints: Set[Position]) {
     return display.toString
   }
 
-  private def getLifeNeighbours(x: Int, y: Int): Int = {
+  def getLifeNeighbours(x: Int, y: Int): Int = {
     val offset: Array[Position] = Array(
       new Position(x - 1, y - 1), new Position(x, y - 1), new Position(x + 1, y - 1),
       new Position(x - 1, y),                             new Position(x + 1, y),
       new Position(x - 1, y + 1), new Position(x, y + 1), new Position(x + 1, y + 1))
 
-    return offset.map( p => if (lifePoints.contains(p)) 1 else 0 ).foldLeft(0)(_ + _)
+    return offset.map(p => lifePoints.contains(p)).filter(b => b == true).size
   }
 
 }
