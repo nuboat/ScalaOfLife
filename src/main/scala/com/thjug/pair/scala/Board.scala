@@ -20,22 +20,18 @@ import scala.util.Random
 /**
  * Created by nuboat on 8/30/14.
  */
-object BoardBuilder {
-
-  def create(x: Int, y: Int): BoardBuilder = {
-    return BoardBuilder(x, y)
-  }
-
-}
-
 case class BoardBuilder(val x: Int, val y: Int) {
 
   private val r = Random
   private val lifePoints = HashSetBuffer[Poi]()
+  private val tuples = ((0 until x) cross (0 until y))
+
+  implicit class Crossable[X](xs: Traversable[X]) {
+    def cross[Y](ys: Traversable[Y]) = for {x <- xs; y <- ys} yield (x, y)
+  }
 
   def random: BoardBuilder = {
-    (for {x <- (0 to x); y <- (0 to y)} yield (x, y))
-      .filter(t => r.nextInt(10) % 2 == 0)
+    tuples.filter(t => r.nextInt(10) % 2 == 0)
       .par.foreach(t => addLifePoint(t._1, t._2))
 
     return this
@@ -43,28 +39,25 @@ case class BoardBuilder(val x: Int, val y: Int) {
 
   def addLifePoint(x: Int, y: Int): BoardBuilder = {
     lifePoints += Poi(x, y)
+
     return this
   }
 
   def build(): Board = {
-    return Board(x, y, lifePoints.toSet)
+    return Board(x, y, lifePoints.toSet, tuples)
   }
 
 }
 
-case class Board(val x: Int, val y: Int, val lifePoints: Set[Poi]) {
+case class Board(val x: Int, val y: Int, val lifePoints: Set[Poi], val tuples: Traversable[(Int, Int)]) {
 
   private val rules: Rules = new Rules
   private val obj = Map(true -> "X", false -> " ")
 
-  implicit class Crossable[X](xs: Traversable[X]) {
-    def cross[Y](ys: Traversable[Y]) = for {x <- xs; y <- ys} yield (x, y)
-  }
-
   def next(): Board = {
     val builder = BoardBuilder(this.x, this.y)
 
-    ((0 to x) cross (0 to y))
+    tuples
       .filter(t => rules.nextState(lifePoints.contains(Poi(t._1, t._2)), getLifeNeighbours(t._1, t._2)))
       .par.foreach(t => builder.addLifePoint(t._1, t._2))
 
@@ -72,25 +65,20 @@ case class Board(val x: Int, val y: Int, val lifePoints: Set[Poi]) {
   }
 
   def render(): String = {
-    val display = new StringBuilder
-
-    for (i <- 0 until y) {
-      for (j <- 0 until x) {
-        display.append(obj(lifePoints.contains(Poi(j, i))))
-      }
-      display.append("\n")
-    }
-
-    return display.toString
+    return (0 until y).map( i => (0 until x)
+            .map( j => obj(lifePoints.contains(Poi(j, i))) ).mkString)
+            .mkString("\n")
   }
 
   def getLifeNeighbours(x: Int, y: Int): Int = {
     val offset: Array[Poi] = Array(
       new Poi(x - 1, y - 1), new Poi(x, y - 1), new Poi(x + 1, y - 1),
-      new Poi(x - 1, y), new Poi(x + 1, y),
+      new Poi(x - 1, y),                        new Poi(x + 1, y),
       new Poi(x - 1, y + 1), new Poi(x, y + 1), new Poi(x + 1, y + 1))
 
-    return offset.map(p => lifePoints.contains(p)).filter(b => b == true).size
+    return offset.map(p => lifePoints.contains(p))
+            .filter(b => b == true)
+            .size
   }
 
 }
