@@ -12,43 +12,13 @@
  * http://creativecommons.org/licenses/by/3.0/legalcode
  *
  */
-package com.thjug.pair.scala
+package thjug.gameoflife
 
-import scala.collection.mutable.{HashSet => HashSetBuffer}
 import scala.util.Random
 
 /**
  * Created by nuboat on 8/30/14.
  */
-case class BoardBuilder(val x: Int, val y: Int) {
-
-  private val r = Random
-  private val lifePoints = HashSetBuffer[Poi]()
-  private val tuples = ((0 until x) cross (0 until y))
-
-  implicit class Crossable[X](xs: Traversable[X]) {
-    def cross[Y](ys: Traversable[Y]) = for {x <- xs; y <- ys} yield (x, y)
-  }
-
-  def random: BoardBuilder = {
-    tuples.filter(t => r.nextInt(10) % 2 == 0)
-      .par.foreach(t => addLifePoint(t._1, t._2))
-
-    return this
-  }
-
-  def addLifePoint(x: Int, y: Int): BoardBuilder = {
-    lifePoints += Poi(x, y)
-
-    return this
-  }
-
-  def build(): Board = {
-    return Board(x, y, lifePoints.toSet, tuples)
-  }
-
-}
-
 case class Board(val x: Int, val y: Int, val lifePoints: Set[Poi], val tuples: Traversable[(Int, Int)]) {
 
   private val rules: Rules = new Rules

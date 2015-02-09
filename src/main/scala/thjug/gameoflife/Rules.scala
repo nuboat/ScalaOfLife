@@ -12,12 +12,18 @@
  * http://creativecommons.org/licenses/by/3.0/legalcode
  *
  */
-package com.thjug.pair.scala
+package thjug.gameoflife
 
 /**
- * Description
- *  case class (auto generate [hashcode, toString, equals, getter, setter])
- *
- * Created by nuboat on 8/30/14.
+ * Created by nuboat on 8/23/14.
  */
-case class Poi(val x:Int, val y:Int) extends Serializable
+class Rules {
+
+  def nextState(isLife: Boolean, i: Int):Boolean = {
+    return isLife match {
+      case true => i >= 2 && i <= 3
+      case false => i == 3
+    }
+  }
+
+}

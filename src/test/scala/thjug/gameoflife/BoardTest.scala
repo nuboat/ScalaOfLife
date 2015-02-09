@@ -12,7 +12,7 @@
  * http://creativecommons.org/licenses/by/3.0/legalcode
  *
  */
-package com.thjug.pair.scala
+package thjug.gameoflife
 
 import org.scalatest.{FlatSpec, Matchers}
 
