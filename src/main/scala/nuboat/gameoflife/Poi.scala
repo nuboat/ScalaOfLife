@@ -12,18 +12,9 @@
  * http://creativecommons.org/licenses/by/3.0/legalcode
  *
  */
-package thjug.gameoflife
+package nuboat.gameoflife
 
 /**
- * Created by nuboat on 8/23/14.
+ * Created by nuboat on 2/9/15.
  */
-class Rules {
-
-  def nextState(isLife: Boolean, i: Int):Boolean = {
-    return isLife match {
-      case true => i >= 2 && i <= 3
-      case false => i == 3
-    }
-  }
-
-}
+case class Poi(val x:Int, val y:Int) extends Serializable

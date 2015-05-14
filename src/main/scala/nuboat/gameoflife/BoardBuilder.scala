@@ -12,7 +12,7 @@
  * http://creativecommons.org/licenses/by/3.0/legalcode
  *
  */
-package thjug.gameoflife
+package nuboat.gameoflife
 
 import scala.util.Random
 import scala.collection.mutable.{HashSet => HashSetBuffer}

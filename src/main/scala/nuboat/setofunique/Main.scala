@@ -1,4 +1,4 @@
-package thjug.setofunique
+package nuboat.setofunique
 
 import scala.util.Random
 
